@@ -1,51 +1,35 @@
 class Solution {
     public int maxProfit(int[] prices) {
 
-        int n=prices.length;
+        int n = prices.length;
 
-        int [][] dp= new int[n][2];
+        int[][] dp = new int[n + 2][2];
 
-        for(int i=0; i<n; i++){
-            Arrays.fill(dp[i], -1);
+        for (int index = n - 1; index >= 0; index--) {
+            for (int buy = 0; buy <= 1; buy++) {
+                int profit;
+
+                if (buy == 1) {
+                    int take = -prices[index] + dp[index + 1][0];
+                    int dntTake = dp[index + 1][1];
+
+                    profit = Math.max(take, dntTake);
+
+                } else {
+                    int sell = prices[index] + dp[index + 2][1];
+                    int dntSell = dp[index + 1][0];
+
+                    profit = Math.max(sell, dntSell);
+
+                }
+
+                dp[index][buy] = profit;
+
+            }
         }
 
-
-        return solve(prices, dp, 0, 1);
+        return dp[0][1];
 
     }
 
-    public int solve(int [] prices, int [][] dp, int index,  int buy){
-
-        int n=prices.length;
-
-        if(index==n || index==n+1){
-            return 0;
-        }
-
-
-        int profit; 
-
-
-        if(dp[index][buy] != -1){
-            return dp[index][buy];
-        }
-
-
-        if(buy==1){
-            int take=-prices[index]+solve(prices, dp, index+1, 0);
-            int dntTake=solve(prices, dp, index+1, 1);
-
-            profit=Math.max(take, dntTake);
-
-        } else{
-            int sell=prices[index]+solve(prices, dp, index+2, 1);
-            int dntSell=solve(prices, dp, index+1, 0);
-
-            profit=Math.max(sell, dntSell);
-
-        }
-
-        return dp[index][buy]=profit;
-
-    }
 }

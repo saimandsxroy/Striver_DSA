@@ -15,32 +15,36 @@ class Solution {
 
         int target = ttlSum / 2;
 
-        boolean[][] dp = new boolean[n][target + 1];
+        boolean[] prev = new boolean[target + 1];
 
         for (int index = 0; index < n; index++) {
-            dp[index][0] = true;
+            prev[0] = true;
         }
 
         if (nums[0] <= target) {
-            dp[0][nums[0]] = true;
+            prev[nums[0]] = true;
         }
 
         for (int index = 1; index < n; index++) {
+
+            boolean [] curr= new boolean[target+1];
+
             for (int targ = 1; targ <= target; targ++) {
 
                 boolean take = false;
 
                 if (nums[index] <= targ) {
-                    take = dp[index-1][targ-nums[index]];
+                    take = prev[targ-nums[index]];
                 }
 
-                boolean dntTake = dp[index-1][targ];
+                boolean dntTake = prev[targ];
 
-                dp[index][targ]= take || dntTake;
+                curr[targ]= take || dntTake;
             }
+            prev=curr;
         }
 
-        return dp[n-1][target];
+        return prev[target];
 
     }
 

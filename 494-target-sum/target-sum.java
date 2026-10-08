@@ -3,70 +3,49 @@ class Solution {
 
         int n = nums.length;
 
-        int totalSum = 0;
+        int sum = 0;
 
-        for (int num : nums) {
-            totalSum += num;
+        for (int i = 0; i < n; i++) {
+            sum += nums[i];
         }
 
-        // Target is outside the possible range
-        if (target > totalSum || target < -totalSum) {
+        // Target is outside possible range
+        if (Math.abs(target) > sum) {
             return 0;
         }
 
-        int offset = totalSum;
-
-        int[][] dp = new int[n][2 * totalSum + 1];
-
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(dp[i], -1);
+        // sum - target must be even
+        if ((sum - target) % 2 != 0) {
+            return 0;
         }
 
-        return solve(nums, dp, n - 1, target, offset);
-    }
+        int targ = (sum - target) / 2;
 
-    public int solve(int[] nums, int[][] dp, int index, int target, int offset) {
+        int[][] dp = new int[n][targ + 1];
 
-    // Impossible target
-    if (target < -offset || target > offset) {
-        return 0;
-    }
+        // Base case
+        dp[0][0] = 1;
 
-    if (index == 0) {
-
-        if (target == 0 && nums[0] == 0) {
-            return 2;
+        if (nums[0] <= targ) {
+            dp[0][nums[0]]++;
         }
 
-        if (target == nums[0] || target == -nums[0]) {
-            return 1;
+        for (int i = 1; i < n; i++) {
+
+            for (int newTarg = 0; newTarg <= targ; newTarg++) {
+
+                int take = 0;
+
+                if (nums[i] <= newTarg) {
+                    take = dp[i - 1][newTarg - nums[i]];
+                }
+
+                int dntTake = dp[i - 1][newTarg];
+
+                dp[i][newTarg] = take + dntTake;
+            }
         }
 
-        return 0;
+        return dp[n - 1][targ];
     }
-
-    int col = target + offset;
-
-    if (dp[index][col] != -1) {
-        return dp[index][col];
-    }
-
-    int plus = solve(
-        nums,
-        dp,
-        index - 1,
-        target - nums[index],
-        offset
-    );
-
-    int minus = solve(
-        nums,
-        dp,
-        index - 1,
-        target + nums[index],
-        offset
-    );
-
-    return dp[index][col] = plus + minus;
-}
 }

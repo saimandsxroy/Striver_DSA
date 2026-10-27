@@ -12,10 +12,10 @@ class Solution {
         int sum=0;
 
 
-        for(int num: map.keySet()){
+        for(Map.Entry<Integer, Integer> entry: map.entrySet()){
             
-            if(map.get(num)==1){
-                sum+=num;
+            if(entry.getValue()==1){
+                sum+=entry.getKey();
             }
         }
 
